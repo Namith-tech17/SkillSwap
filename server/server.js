@@ -438,7 +438,7 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Internal Server Error', message: err.message });
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`=======================================================`);
   console.log(`🚀 SkillSwap Express Backend running on http://localhost:${PORT}`);
   console.log(`   RV University - CS3301 Full Stack Development`);
