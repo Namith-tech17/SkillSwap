@@ -1,0 +1,255 @@
+{
+  "skills": [
+    { "skill_id": "sk_1", "skill_name": "React.js & Frontend", "category": "Programming", "description": "Hooks, Component architecture, state management & modern web development." },
+    { "skill_id": "sk_2", "skill_name": "Python & DSA", "category": "Programming", "description": "Core Python, algorithms, data structures, and problem solving." },
+    { "skill_id": "sk_3", "skill_name": "Classical Guitar", "category": "Music & Arts", "description": "Fingerstyle acoustic, classical scales, and chord progressions." },
+    { "skill_id": "sk_4", "skill_name": "Digital Photography", "category": "Creative Arts", "description": "Aperture, ISO, composition, and Adobe Lightroom editing." },
+    { "skill_id": "sk_5", "skill_name": "UI/UX & Figma", "category": "Design", "description": "Wireframing, design systems, interactive prototypes, and usability testing." },
+    { "skill_id": "sk_6", "skill_name": "Machine Learning & AI", "category": "Data Science", "description": "Supervised models, scikit-learn, neural net fundamentals, and PyTorch." },
+    { "skill_id": "sk_7", "skill_name": "Public Speaking & Pitching", "category": "Soft Skills", "description": "Body language, pitch decks, stage confidence, and storytelling." },
+    { "skill_id": "sk_8", "skill_name": "Video Editing (Premiere Pro)", "category": "Creative Arts", "description": "Timeline cutting, color grading, pacing, and motion graphics." },
+    { "skill_id": "sk_9", "skill_name": "Financial Modeling & Excel", "category": "Business", "description": "Formulas, pivot tables, valuation models, and startup finances." },
+    { "skill_id": "sk_10", "skill_name": "Node.js & Express APIs", "category": "Programming", "description": "REST endpoints, JWT authentication, middleware, and database connectivity." }
+  ],
+  "users": [
+    {
+      "user_id": "usr_1",
+      "name": "Hemanth B Y",
+      "email": "hemanth@rvu.edu.in",
+      "usn": "1RUA24SCS0041",
+      "department": "Computer Science & Engineering",
+      "semester": "5th Sem",
+      "bio": "Full-stack developer passionate about building reactive web apps. Love teaching React and modern JavaScript.",
+      "rating_avg": 4.9,
+      "total_reviews": 12,
+      "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+      "skills_teach": [
+        { "skill_id": "sk_1", "skill_name": "React.js & Frontend", "proficiency_level": "Advanced", "description": "Components, state, React Router, custom hooks, and Tailwind/CSS." },
+        { "skill_id": "sk_10", "skill_name": "Node.js & Express APIs", "proficiency_level": "Intermediate", "description": "Express REST servers, auth, and database integration." }
+      ],
+      "skills_learn": [
+        { "skill_id": "sk_3", "skill_name": "Classical Guitar", "priority": "High", "notes": "Want to learn fingerpicking basics and scales." },
+        { "skill_id": "sk_4", "skill_name": "Digital Photography", "priority": "Medium", "notes": "Learning camera manual mode and street photography." }
+      ]
+    },
+    {
+      "user_id": "usr_2",
+      "name": "Priya Nair",
+      "email": "priya.nair@rvu.edu.in",
+      "usn": "1RUA24SCS0019",
+      "department": "Design & Media Arts",
+      "semester": "5th Sem",
+      "bio": "Acoustic guitarist with 7 years of classical training. Looking to pick up coding and frontend web design.",
+      "rating_avg": 4.95,
+      "total_reviews": 18,
+      "avatar": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80",
+      "skills_teach": [
+        { "skill_id": "sk_3", "skill_name": "Classical Guitar", "proficiency_level": "Advanced", "description": "Fingerpicking, chords, sheet music, and rhythm theory." },
+        { "skill_id": "sk_4", "skill_name": "Digital Photography", "proficiency_level": "Intermediate", "description": "Portrait photography and Lightroom preset development." }
+      ],
+      "skills_learn": [
+        { "skill_id": "sk_1", "skill_name": "React.js & Frontend", "priority": "High", "notes": "Need help building an interactive portfolio website." },
+        { "skill_id": "sk_2", "skill_name": "Python & DSA", "priority": "Medium", "notes": "Introductory programming for problem solving." }
+      ]
+    },
+    {
+      "user_id": "usr_3",
+      "name": "C Namith Jain",
+      "email": "namith@rvu.edu.in",
+      "usn": "1RUA24SCS0021",
+      "department": "Computer Science & Engineering",
+      "semester": "5th Sem",
+      "bio": "AI enthusiast and data science researcher. Experienced with Scikit-learn, deep learning, and Python algorithms.",
+      "rating_avg": 4.85,
+      "total_reviews": 15,
+      "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
+      "skills_teach": [
+        { "skill_id": "sk_6", "skill_name": "Machine Learning & AI", "proficiency_level": "Advanced", "description": "Hands-on classification, regression, and intro neural nets." },
+        { "skill_id": "sk_2", "skill_name": "Python & DSA", "proficiency_level": "Advanced", "description": "Binary trees, dynamic programming, and LeetCode techniques." }
+      ],
+      "skills_learn": [
+        { "skill_id": "sk_5", "skill_name": "UI/UX & Figma", "priority": "High", "notes": "Desire to design clean dashboards for AI models." },
+        { "skill_id": "sk_7", "skill_name": "Public Speaking & Pitching", "priority": "Medium", "notes": "Presenting research papers effectively." }
+      ]
+    },
+    {
+      "user_id": "usr_4",
+      "name": "N Gnana Prakash",
+      "email": "gnana@rvu.edu.in",
+      "usn": "1RUA24SCS0062",
+      "department": "School of Computer Science",
+      "semester": "5th Sem",
+      "bio": "Product designer and design sprint coordinator. Figma wizard who translates messy ideas into sleek component systems.",
+      "rating_avg": 4.9,
+      "total_reviews": 14,
+      "avatar": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80",
+      "skills_teach": [
+        { "skill_id": "sk_5", "skill_name": "UI/UX & Figma", "proficiency_level": "Advanced", "description": "Auto-layout, design tokens, micro-interactions, and usability testing." },
+        { "skill_id": "sk_7", "skill_name": "Public Speaking & Pitching", "proficiency_level": "Intermediate", "description": "Hackathon pitches, slide deck choreography, and speaking cadence." }
+      ],
+      "skills_learn": [
+        { "skill_id": "sk_6", "skill_name": "Machine Learning & AI", "priority": "High", "notes": "Looking to integrate LLMs into UI design workflows." },
+        { "skill_id": "sk_10", "skill_name": "Node.js & Express APIs", "priority": "Medium", "notes": "Backend fundamentals for design engineers." }
+      ]
+    },
+    {
+      "user_id": "usr_5",
+      "name": "Rohan Mehta",
+      "email": "rohan.mehta@rvu.edu.in",
+      "usn": "1RUA24SCS0088",
+      "department": "Computer Science & Engineering",
+      "semester": "5th Sem",
+      "bio": "Competitive programmer and math tutor. Love breaking down complex algorithmic concepts into intuitive steps.",
+      "rating_avg": 4.75,
+      "total_reviews": 9,
+      "avatar": "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=150&auto=format&fit=crop&q=80",
+      "skills_teach": [
+        { "skill_id": "sk_2", "skill_name": "Python & DSA", "proficiency_level": "Advanced", "description": "Python fundamentals, OOP, recursion, and search algorithms." }
+      ],
+      "skills_learn": [
+        { "skill_id": "sk_4", "skill_name": "Digital Photography", "priority": "High", "notes": "Want to capture college festival photos with a DSLR." },
+        { "skill_id": "sk_3", "skill_name": "Classical Guitar", "priority": "Medium", "notes": "Guitar basics for casual jamming." }
+      ]
+    },
+    {
+      "user_id": "usr_6",
+      "name": "Ananya Sharma",
+      "email": "ananya.sharma@rvu.edu.in",
+      "usn": "1RUA24SCS0012",
+      "department": "Media & Visual Communications",
+      "semester": "5th Sem",
+      "bio": "Campus photographer and visual storyteller. Passionate about lighting, framing, and portrait retouching.",
+      "rating_avg": 4.92,
+      "total_reviews": 16,
+      "avatar": "https://images.unsplash.com/photo-1534751516642-a171ed28cb48?w=150&auto=format&fit=crop&q=80",
+      "skills_teach": [
+        { "skill_id": "sk_4", "skill_name": "Digital Photography", "proficiency_level": "Advanced", "description": "Camera controls, light metering, golden hour portraits, Lightroom editing." },
+        { "skill_id": "sk_8", "skill_name": "Video Editing (Premiere Pro)", "proficiency_level": "Intermediate", "description": "B-roll sequencing, audio cleanup, and reel creation." }
+      ],
+      "skills_learn": [
+        { "skill_id": "sk_2", "skill_name": "Python & DSA", "priority": "High", "notes": "Need Python scripting for automating media backups." },
+        { "skill_id": "sk_9", "skill_name": "Financial Modeling & Excel", "priority": "Medium", "notes": "Budgeting for freelance video and shoot gigs." }
+      ]
+    }
+  ],
+  "available_slots": [
+    { "slot_id": "slot_1", "teacher_id": "usr_2", "day": "Today", "time": "4:00 PM - 5:00 PM", "status": "available", "locked_by": null, "locked_at": null },
+    { "slot_id": "slot_2", "teacher_id": "usr_2", "day": "Today", "time": "5:30 PM - 6:30 PM", "status": "available", "locked_by": null, "locked_at": null },
+    { "slot_id": "slot_3", "teacher_id": "usr_2", "day": "Tomorrow", "time": "11:00 AM - 12:00 PM", "status": "available", "locked_by": null, "locked_at": null },
+    { "slot_id": "slot_4", "teacher_id": "usr_3", "day": "Today", "time": "3:00 PM - 4:00 PM", "status": "available", "locked_by": null, "locked_at": null },
+    { "slot_id": "slot_5", "teacher_id": "usr_3", "day": "Tomorrow", "time": "2:00 PM - 3:00 PM", "status": "available", "locked_by": null, "locked_at": null },
+    { "slot_id": "slot_6", "teacher_id": "usr_4", "day": "Today", "time": "5:00 PM - 6:00 PM", "status": "available", "locked_by": null, "locked_at": null },
+    { "slot_id": "slot_7", "teacher_id": "usr_4", "day": "Tomorrow", "time": "4:00 PM - 5:00 PM", "status": "available", "locked_by": null, "locked_at": null },
+    { "slot_id": "slot_8", "teacher_id": "usr_6", "day": "Today", "time": "4:30 PM - 5:30 PM", "status": "available", "locked_by": null, "locked_at": null }
+  ],
+  "sessions": [
+    {
+      "session_id": "ses_1",
+      "teacher_id": "usr_2",
+      "teacher_name": "Priya Nair",
+      "learner_id": "usr_1",
+      "learner_name": "Hemanth B Y",
+      "skill_name": "Classical Guitar",
+      "scheduled_time": "Today, 5:30 PM - 6:30 PM",
+      "meeting_mode": "In-Person (Student Activity Center Room 204)",
+      "notes": "Bring acoustic guitar. Will cover fingerpicking & G-C-D transition exercises.",
+      "status": "confirmed",
+      "created_at": "2026-11-02T10:00:00Z"
+    },
+    {
+      "session_id": "ses_2",
+      "teacher_id": "usr_1",
+      "teacher_name": "Hemanth B Y",
+      "learner_id": "usr_2",
+      "learner_name": "Priya Nair",
+      "skill_name": "React.js & Frontend",
+      "scheduled_time": "Tomorrow, 3:00 PM - 4:00 PM",
+      "meeting_mode": "Online Meet (Google Meet)",
+      "notes": "Setting up first Vite + React app and explaining components, props, state.",
+      "status": "confirmed",
+      "created_at": "2026-11-02T10:30:00Z"
+    },
+    {
+      "session_id": "ses_3",
+      "teacher_id": "usr_3",
+      "teacher_name": "C Namith Jain",
+      "learner_id": "usr_4",
+      "learner_name": "N Gnana Prakash",
+      "skill_name": "Machine Learning & AI",
+      "scheduled_time": "Yesterday, 4:00 PM - 5:00 PM",
+      "meeting_mode": "In-Person (Library Discussion Pod 3)",
+      "notes": "Discussed feature engineering and scikit-learn pipeline for UI prediction.",
+      "status": "completed",
+      "created_at": "2026-11-01T15:00:00Z"
+    }
+  ],
+  "feedback": [
+    {
+      "feedback_id": "fb_1",
+      "session_id": "ses_3",
+      "teacher_id": "usr_3",
+      "given_by_id": "usr_4",
+      "given_by_name": "N Gnana Prakash",
+      "skill_name": "Machine Learning & AI",
+      "rating": 5,
+      "comment": "Namith explained neural network intuition very clearly with real examples! Great peer tutor.",
+      "created_at": "2026-11-01T18:00:00Z"
+    },
+    {
+      "feedback_id": "fb_2",
+      "session_id": "ses_prev_1",
+      "teacher_id": "usr_2",
+      "given_by_id": "usr_5",
+      "given_by_name": "Rohan Mehta",
+      "skill_name": "Classical Guitar",
+      "rating": 5,
+      "comment": "Priya made fingerpicking so easy to grasp within just 45 minutes. Super patient and structured!",
+      "created_at": "2026-10-30T16:30:00Z"
+    },
+    {
+      "feedback_id": "fb_3",
+      "session_id": "ses_prev_2",
+      "teacher_id": "usr_1",
+      "given_by_id": "usr_3",
+      "given_by_name": "C Namith Jain",
+      "skill_name": "React.js & Frontend",
+      "rating": 5,
+      "comment": "Hemanth helped me debug state management and routing in 20 minutes. Highly recommended!",
+      "created_at": "2026-10-28T14:00:00Z"
+    }
+  ],
+  "messages": [
+    {
+      "message_id": "msg_1",
+      "peer_id": "usr_2",
+      "sender_id": "usr_2",
+      "sender_name": "Priya Nair",
+      "text": "Hey Hemanth! Excited for our guitar exchange session today! Do you have a classical or acoustic guitar?",
+      "timestamp": "10:15 AM"
+    },
+    {
+      "message_id": "msg_2",
+      "peer_id": "usr_2",
+      "sender_id": "usr_1",
+      "sender_name": "Hemanth B Y",
+      "text": "Hey Priya! I have a Yamaha acoustic guitar ready. Looking forward to learning chord transitions!",
+      "timestamp": "10:18 AM"
+    },
+    {
+      "message_id": "msg_3",
+      "peer_id": "usr_2",
+      "sender_id": "usr_2",
+      "sender_name": "Priya Nair",
+      "text": "Perfect! In tomorrow's slot, could you show me how props and useState work in React? I want to build a portfolio gallery.",
+      "timestamp": "10:22 AM"
+    },
+    {
+      "message_id": "msg_4",
+      "peer_id": "usr_2",
+      "sender_id": "usr_1",
+      "sender_name": "Hemanth B Y",
+      "text": "Absolutely! We will build a live gallery component together step by step.",
+      "timestamp": "10:25 AM"
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  # SkillSwap Node.js Backend API
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: skillswap_api
+    restart: always
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+      - PORT=5000
+      - MONGODB_URI=mongodb://mongo:27017/skillswap
+      - JWT_SECRET=skillswap_docker_secure_secret_2026
+    depends_on:
+      - mongo
+
+  # MongoDB Database Service
+  mongo:
+    image: mongo:6.0
+    container_name: skillswap_mongodb
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mongo_data:
