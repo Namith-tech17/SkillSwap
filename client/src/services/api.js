@@ -1,5 +1,5 @@
 
-const API_BASE = '/api';
+const API_BASE = import.meta.env.VITE_API_URL || 'https://skillswap-backend-gy4q.onrender.com/api';
 
 function getAuthHeaders() {
   const token = localStorage.getItem('skillswap_jwt_token');
