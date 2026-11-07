@@ -1,3 +1,4 @@
+
 const API_BASE = '/api';
 
 function getAuthHeaders() {
@@ -127,6 +128,23 @@ export const api = {
     const query = teacherId ? `?teacher_id=${teacherId}` : '';
     const res = await fetch(`${API_BASE}/slots${query}`);
     return res.json();
+  },
+
+  // Create Availability Slot
+  async createSlot(slotData) {
+    const res = await fetch(`${API_BASE}/slots`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify(slotData),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || 'Failed to create availability slot');
+    }
+
+    return data;
   },
 
   async lockSlot(slotId, userId = 'usr_1') {

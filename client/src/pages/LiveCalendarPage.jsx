@@ -30,6 +30,14 @@ const LiveCalendarPage = () => {
   const [activeLockedSlot, setActiveLockedSlot] = useState(null);
   const [loadingSlots, setLoadingSlots] = useState(false);
 
+  // My Availability State
+  const [mySlots, setMySlots] = useState([]);
+  const [availabilityForm, setAvailabilityForm] = useState({
+    day: 'Monday',
+    time: '10:00 AM'
+  });
+  const [isCreatingSlot, setIsCreatingSlot] = useState(false);
+
   // Functional Booking Form State (Requirement Sl. No. 9: Form Handling)
   const [formData, setFormData] = useState({
     skill_name: '',
@@ -73,6 +81,57 @@ const LiveCalendarPage = () => {
       .catch((err) => console.error(err))
       .finally(() => setLoadingSlots(false));
   }, [selectedTeacherId, allUsers]);
+
+  // Fetch availability slots posted by the current user
+  useEffect(() => {
+    if (!currentUser?.user_id) return;
+
+    api
+      .getSlots(currentUser.user_id)
+      .then((data) => setMySlots(data))
+      .catch((err) => console.error('Could not load your availability:', err));
+  }, [currentUser]);
+
+  // Create a new availability slot
+  const handleAvailabilitySubmit = async (e) => {
+    e.preventDefault();
+
+    if (!availabilityForm.day || !availabilityForm.time.trim()) {
+      addNotification('Missing Details', 'Please select a day and enter a time.', 'error');
+      return;
+    }
+
+    setIsCreatingSlot(true);
+
+    try {
+      await api.createSlot({
+        day: availabilityForm.day,
+        time: availabilityForm.time.trim()
+      });
+
+      const updatedSlots = await api.getSlots(currentUser.user_id);
+      setMySlots(updatedSlots);
+
+      addNotification(
+        'Availability Posted!',
+        `${availabilityForm.day} at ${availabilityForm.time} is now available for students to book.`,
+        'success'
+      );
+
+      setAvailabilityForm({
+        day: 'Monday',
+        time: '10:00 AM'
+      });
+    } catch (err) {
+      addNotification(
+        'Could Not Post Availability',
+        err.message || 'Something went wrong while creating your slot.',
+        'error'
+      );
+    } finally {
+      setIsCreatingSlot(false);
+    }
+  };
 
   // Handle slot locking (Implements real-time double-booking prevention)
   const handleLockSlot = async (slot) => {
@@ -189,6 +248,117 @@ const LiveCalendarPage = () => {
         <p style={{ color: 'var(--text-muted)', fontSize: '1rem', maxWidth: '750px' }}>
           Prevent double-booking in real-time. When you click a slot, it instantly locks for 60 seconds across all campus clients so no other student can claim it while you fill the confirmation details.
         </p>
+      </div>
+
+      {/* My Availability Section */}
+      <div className="card" style={{ padding: '24px', marginBottom: '32px' }}>
+        <div style={{ marginBottom: '18px' }}>
+          <h3 style={{ fontSize: '1.3rem', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <CalendarIcon size={21} color="var(--teal)" />
+            My Availability
+          </h3>
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>
+            Post your available days and times so other students can book a skill exchange session with you.
+          </p>
+        </div>
+
+        <form
+          onSubmit={handleAvailabilitySubmit}
+          style={{
+            display: 'flex',
+            alignItems: 'flex-end',
+            gap: '14px',
+            flexWrap: 'wrap'
+          }}
+        >
+          <div className="form-group" style={{ flex: '1 1 180px', marginBottom: 0 }}>
+            <label className="form-label">Available Day</label>
+            <select
+              className="form-select"
+              value={availabilityForm.day}
+              onChange={(e) =>
+                setAvailabilityForm((prev) => ({
+                  ...prev,
+                  day: e.target.value
+                }))
+              }
+            >
+              <option value="Monday">Monday</option>
+              <option value="Tuesday">Tuesday</option>
+              <option value="Wednesday">Wednesday</option>
+              <option value="Thursday">Thursday</option>
+              <option value="Friday">Friday</option>
+              <option value="Saturday">Saturday</option>
+              <option value="Sunday">Sunday</option>
+            </select>
+          </div>
+
+          <div className="form-group" style={{ flex: '1 1 180px', marginBottom: 0 }}>
+            <label className="form-label">Available Time</label>
+            <input
+              type="text"
+              className="form-input"
+              placeholder="e.g. 10:00 AM"
+              value={availabilityForm.time}
+              onChange={(e) =>
+                setAvailabilityForm((prev) => ({
+                  ...prev,
+                  time: e.target.value
+                }))
+              }
+              required
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="btn btn-primary"
+            disabled={isCreatingSlot}
+            style={{ padding: '12px 22px', minHeight: '44px' }}
+          >
+            {isCreatingSlot ? 'Posting...' : '+ Post Availability'}
+          </button>
+        </form>
+
+        <div style={{ marginTop: '22px' }}>
+          <h4 style={{ fontSize: '1rem', marginBottom: '12px' }}>
+            My Posted Slots ({mySlots.length})
+          </h4>
+
+          {mySlots.length === 0 ? (
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem' }}>
+              You haven't posted any availability yet.
+            </p>
+          ) : (
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+              {mySlots.map((slot) => (
+                <div
+                  key={slot.slot_id}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px',
+                    padding: '10px 14px',
+                    border: '1px solid var(--border)',
+                    borderRadius: 'var(--radius-md)',
+                    background: '#ffffff'
+                  }}
+                >
+                  <CalendarIcon size={16} color="var(--teal)" />
+                  <span style={{ fontWeight: 600, fontSize: '0.88rem' }}>
+                    {slot.day}
+                  </span>
+                  <span style={{ color: 'var(--text-muted)', fontSize: '0.88rem' }}>
+                    {slot.time}
+                  </span>
+                  <span className={`badge ${slot.status === 'available' ? 'badge-teal' : 'badge-gray'}`}>
+                    {slot.status}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Peer Selector Bar */}
@@ -420,6 +590,12 @@ const LiveCalendarPage = () => {
                 {formErrors.slot && (
                   <div style={{ background: '#fef2f2', border: '1px solid #f87171', color: '#b91c1c', padding: '10px 14px', borderRadius: '8px', fontSize: '0.85rem', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <AlertTriangle size={16} /> {formErrors.slot}
+                  </div>
+                )}
+
+                {formErrors.submit && (
+                  <div style={{ background: '#fef2f2', border: '1px solid #f87171', color: '#b91c1c', padding: '10px 14px', borderRadius: '8px', fontSize: '0.85rem', marginBottom: '16px' }}>
+                    <AlertTriangle size={16} /> {formErrors.submit}
                   </div>
                 )}
 

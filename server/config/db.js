@@ -1,3 +1,4 @@
+
 import mongoose from 'mongoose';
 import fs from 'fs';
 import path from 'path';
@@ -13,15 +14,19 @@ import { Feedback } from '../models/Feedback.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const dataFilePath = path.join(__dirname, '..', 'data', 'initialData.json');
+const dataFilePath = path.join(
+  __dirname,
+  '..',
+  'data',
+  'initialData.json'
+);
 
 export let dbState = {
   isMongoConnected: false,
-  connectionType: 'Structured File Store (Hybrid Mongoose Engine)',
+  connectionType: 'Disconnected',
   stats: {}
 };
 
-// Memory cache loaded from initialData.json
 export let memoryDb = {
   skills: [],
   users: [],
@@ -31,56 +36,191 @@ export let memoryDb = {
   messages: []
 };
 
-export async function connectDB() {
-  const mongoUri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/skillswap';
+// ========================================
+// INSERT MISSING SKILLS INTO MONGODB
+// ========================================
 
+async function seedSkillsToMongoDB() {
   try {
-    // Attempt Mongoose connection with 1500ms serverSelectionTimeoutMS
-    await mongoose.connect(mongoUri, {
-      serverSelectionTimeoutMS: 1500
-    });
-    dbState.isMongoConnected = true;
-    dbState.connectionType = `MongoDB Live Instance (${mongoUri})`;
-    console.log(`✅ [Database] Mongoose connected successfully to ${mongoUri}`);
-  } catch (err) {
-    dbState.isMongoConnected = false;
-    dbState.connectionType = 'Mongoose Schema Engine + Persistent Fallback Store';
-    console.log(`ℹ️ [Database] MongoDB daemon not running locally. Operating in Mongoose Validation + File Store mode.`);
+    const skills = memoryDb.skills || [];
+
+    if (skills.length === 0) {
+      console.log('⚠️ [Database] No skills found in seed data.');
+      return;
+    }
+
+    let insertedCount = 0;
+
+    for (const skill of skills) {
+      if (!skill.skill_id || !skill.skill_name || !skill.category) {
+        console.warn(
+          '⚠️ [Database] Skipping invalid skill:',
+          skill
+        );
+        continue;
+      }
+
+      const result = await Skill.updateOne(
+        { skill_id: skill.skill_id },
+        {
+          $setOnInsert: {
+            skill_id: skill.skill_id,
+            skill_name: skill.skill_name,
+            category: skill.category,
+            description: skill.description || ''
+          }
+        },
+        {
+          upsert: true,
+          runValidators: true
+        }
+      );
+
+      if (result.upsertedCount > 0) {
+        insertedCount++;
+      }
+    }
+
+    const totalSkills = await Skill.countDocuments();
+
+    console.log(
+      `✅ [Database] Skills synchronized: ${insertedCount} inserted, ${totalSkills} total in MongoDB.`
+    );
+
+  } catch (error) {
+    console.error(
+      '❌ [Database] Skill seeding failed:',
+      error.message
+    );
+
+    throw error;
+  }
+}
+
+// ========================================
+// MONGODB ATLAS CONNECTION
+// ========================================
+
+export async function connectDB() {
+  const mongoUri = process.env.MONGODB_URI;
+
+  if (!mongoUri) {
+    throw new Error(
+      'MONGODB_URI is missing. Check your server/.env file.'
+    );
   }
 
-  // Load seed data into memoryDb
+  try {
+    await mongoose.connect(mongoUri, {
+      serverSelectionTimeoutMS: 10000
+    });
+
+    dbState.isMongoConnected = true;
+    dbState.connectionType = 'MongoDB Atlas';
+
+    console.log(
+      '✅ [Database] Successfully connected to MongoDB Atlas'
+    );
+
+  } catch (err) {
+    dbState.isMongoConnected = false;
+    dbState.connectionType = 'Disconnected';
+
+    console.error(
+      '❌ [Database] MongoDB connection failed:',
+      err.message
+    );
+
+    throw err;
+  }
+
+  // Load initial seed data into memoryDb
   try {
     if (fs.existsSync(dataFilePath)) {
       const raw = fs.readFileSync(dataFilePath, 'utf-8');
-      memoryDb = JSON.parse(raw);
-      console.log(`✅ [Database] Seed data verified with ${memoryDb.users.length} students & ${memoryDb.skills.length} skills.`);
+      const parsedData = JSON.parse(raw);
+
+      memoryDb = {
+        ...memoryDb,
+        ...parsedData
+      };
+
+      console.log(
+        `✅ [Database] Seed data loaded: ${memoryDb.users.length} users and ${memoryDb.skills.length} skills.`
+      );
+
+      // Insert missing skills into MongoDB Atlas
+      await seedSkillsToMongoDB();
+
+    } else {
+      console.warn(
+        '⚠️ [Database] initialData.json was not found.'
+      );
     }
+
   } catch (fileErr) {
-    console.error('Error reading seed data:', fileErr);
+    console.error(
+      '❌ [Database] Error loading seed data:',
+      fileErr.message
+    );
+
+    throw fileErr;
   }
 
   return dbState;
 }
 
-// Comprehensive Database Verification Suite (Criteria 3: Database verification & testing)
+// ========================================
+// DATABASE VERIFICATION SUITE
+// ========================================
+
 export async function runDatabaseVerification() {
+
   const results = {
     timestamp: new Date().toISOString(),
     connectionMode: dbState.connectionType,
     isMongoConnected: dbState.isMongoConnected,
+
     schemas: [
-      { name: 'User', fields: Object.keys(User.schema.paths), pathCount: Object.keys(User.schema.paths).length },
-      { name: 'Skill', fields: Object.keys(Skill.schema.paths), pathCount: Object.keys(Skill.schema.paths).length },
-      { name: 'Session', fields: Object.keys(Session.schema.paths), pathCount: Object.keys(Session.schema.paths).length },
-      { name: 'Slot', fields: Object.keys(Slot.schema.paths), pathCount: Object.keys(Slot.schema.paths).length },
-      { name: 'Message', fields: Object.keys(Message.schema.paths), pathCount: Object.keys(Message.schema.paths).length },
-      { name: 'Feedback', fields: Object.keys(Feedback.schema.paths), pathCount: Object.keys(Feedback.schema.paths).length },
+      {
+        name: 'User',
+        fields: Object.keys(User.schema.paths),
+        pathCount: Object.keys(User.schema.paths).length
+      },
+      {
+        name: 'Skill',
+        fields: Object.keys(Skill.schema.paths),
+        pathCount: Object.keys(Skill.schema.paths).length
+      },
+      {
+        name: 'Session',
+        fields: Object.keys(Session.schema.paths),
+        pathCount: Object.keys(Session.schema.paths).length
+      },
+      {
+        name: 'Slot',
+        fields: Object.keys(Slot.schema.paths),
+        pathCount: Object.keys(Slot.schema.paths).length
+      },
+      {
+        name: 'Message',
+        fields: Object.keys(Message.schema.paths),
+        pathCount: Object.keys(Message.schema.paths).length
+      },
+      {
+        name: 'Feedback',
+        fields: Object.keys(Feedback.schema.paths),
+        pathCount: Object.keys(Feedback.schema.paths).length
+      }
     ],
+
     tests: [],
+    stats: {},
     overallStatus: 'PASSED'
   };
 
-  // Test 1: User Schema Validation (valid user)
+  // TEST 1: Valid User Validation
+
   try {
     const validUserDoc = new User({
       user_id: 'test_usr_1',
@@ -91,40 +231,66 @@ export async function runDatabaseVerification() {
       department: 'CSE',
       semester: '5th Sem'
     });
+
     const err = validUserDoc.validateSync();
+
     results.tests.push({
       id: 'DB-01',
       title: 'User Schema Validation (Positive)',
       status: err ? 'FAILED' : 'PASSED',
-      detail: err ? err.message : 'Successfully validated standard student schema with email & USN constraints'
+      detail: err
+        ? err.message
+        : 'Successfully validated student schema'
     });
+
   } catch (e) {
-    results.tests.push({ id: 'DB-01', title: 'User Schema Validation (Positive)', status: 'FAILED', detail: e.message });
+    results.tests.push({
+      id: 'DB-01',
+      title: 'User Schema Validation (Positive)',
+      status: 'FAILED',
+      detail: e.message
+    });
   }
 
-  // Test 2: User Schema Validation (Negative: invalid email & missing USN)
+  // TEST 2: Invalid User Validation
+
   try {
     const invalidUser = new User({
       user_id: 'test_usr_invalid',
-      name: 'X', // too short (< 2 chars)
+      name: 'X',
       email: 'invalid-email-no-at',
       password_hash: 'pw'
-      // missing usn
     });
+
     const err = invalidUser.validateSync();
-    const caughtErrors = err ? Object.keys(err.errors) : [];
-    const passed = caughtErrors.includes('email') && caughtErrors.includes('usn') && caughtErrors.includes('name');
+
+    const caughtErrors = err
+      ? Object.keys(err.errors)
+      : [];
+
+    const passed =
+      caughtErrors.includes('email') &&
+      caughtErrors.includes('usn') &&
+      caughtErrors.includes('name');
+
     results.tests.push({
       id: 'DB-02',
       title: 'Validation Constraint Enforcement (Negative)',
       status: passed ? 'PASSED' : 'FAILED',
-      detail: `Correctly intercepted invalid fields: [${caughtErrors.join(', ')}]`
+      detail: `Intercepted invalid fields: [${caughtErrors.join(', ')}]`
     });
+
   } catch (e) {
-    results.tests.push({ id: 'DB-02', title: 'Validation Constraint Enforcement', status: 'FAILED', detail: e.message });
+    results.tests.push({
+      id: 'DB-02',
+      title: 'Validation Constraint Enforcement',
+      status: 'FAILED',
+      detail: e.message
+    });
   }
 
-  // Test 3: Feedback Rating Bounds Check (Rating must be 1-5)
+  // TEST 3: Feedback Rating Validation
+
   try {
     const invalidFeedback = new Feedback({
       feedback_id: 'test_fb_invalid',
@@ -133,40 +299,75 @@ export async function runDatabaseVerification() {
       given_by_id: 'usr_1',
       given_by_name: 'Test',
       skill_name: 'Testing',
-      rating: 6, // Exceeds max 5!
+      rating: 6,
       comment: 'Valid comment'
     });
+
     const err = invalidFeedback.validateSync();
-    const ratingError = err && err.errors && err.errors.rating;
+
+    const ratingError =
+      err && err.errors && err.errors.rating;
+
     results.tests.push({
       id: 'DB-03',
-      title: 'Rating Boundary Constraint (min: 1, max: 5)',
+      title: 'Rating Boundary Constraint (1-5)',
       status: ratingError ? 'PASSED' : 'FAILED',
-      detail: ratingError ? 'Correctly rejected rating = 6 (exceeds max rating of 5)' : 'Constraint failed'
+      detail: ratingError
+        ? 'Correctly rejected rating = 6'
+        : 'Rating constraint failed'
     });
+
   } catch (e) {
-    results.tests.push({ id: 'DB-03', title: 'Rating Boundary Constraint', status: 'FAILED', detail: e.message });
+    results.tests.push({
+      id: 'DB-03',
+      title: 'Rating Boundary Constraint',
+      status: 'FAILED',
+      detail: e.message
+    });
   }
 
-  // Test 4: Relational Integrity Check
-  try {
-    const usersCount = memoryDb.users.length;
-    const skillsCount = memoryDb.skills.length;
-    const sessionsCount = memoryDb.sessions.length;
-    const slotsCount = memoryDb.available_slots.length;
+  // TEST 4: Relational Integrity
 
-    // Check if every session teacher exists in users list
-    const brokenSessions = memoryDb.sessions.filter(
-      s => !memoryDb.users.some(u => u.user_id === s.teacher_id)
+  try {
+    const [
+      usersCount,
+      skillsCount,
+      sessionsCount,
+      slotsCount,
+      feedbackCount,
+      messagesCount,
+      users,
+      sessions
+    ] = await Promise.all([
+      User.countDocuments(),
+      Skill.countDocuments(),
+      Session.countDocuments(),
+      Slot.countDocuments(),
+      Feedback.countDocuments(),
+      Message.countDocuments(),
+      User.find().select('user_id').lean(),
+      Session.find().select('teacher_id learner_id').lean()
+    ]);
+
+    const userIds = new Set(
+      users.map(user => user.user_id)
     );
 
-    const relationalIntegrityOk = brokenSessions.length === 0;
+    const brokenSessions = sessions.filter(
+      session =>
+        !userIds.has(session.teacher_id) ||
+        !userIds.has(session.learner_id)
+    );
+
+    const passed = brokenSessions.length === 0;
 
     results.tests.push({
       id: 'DB-04',
-      title: 'Relational Integrity & Foreign Keys',
-      status: relationalIntegrityOk ? 'PASSED' : 'FAILED',
-      detail: `Verified foreign keys across Sessions, Slots, and Users. 0 orphaned session records found.`
+      title: 'Relational Integrity Check',
+      status: passed ? 'PASSED' : 'FAILED',
+      detail: passed
+        ? 'No orphaned session records found in MongoDB.'
+        : `${brokenSessions.length} sessions reference missing users.`
     });
 
     results.stats = {
@@ -174,13 +375,24 @@ export async function runDatabaseVerification() {
       skills: skillsCount,
       sessions: sessionsCount,
       slots: slotsCount,
-      feedback: memoryDb.feedback.length,
-      messages: memoryDb.messages.length
+      feedback: feedbackCount,
+      messages: messagesCount
     };
+
+    dbState.stats = results.stats;
+
   } catch (e) {
-    results.tests.push({ id: 'DB-04', title: 'Relational Integrity Check', status: 'FAILED', detail: e.message });
+    results.tests.push({
+      id: 'DB-04',
+      title: 'Relational Integrity Check',
+      status: 'FAILED',
+      detail: e.message
+    });
   }
 
-  results.overallStatus = results.tests.every(t => t.status === 'PASSED') ? 'PASSED' : 'FAILED';
+  results.overallStatus = results.tests.every(
+    test => test.status === 'PASSED'
+  ) ? 'PASSED' : 'FAILED';
+
   return results;
 }
