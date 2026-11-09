@@ -6,7 +6,6 @@ import NotificationToast from './components/NotificationToast';
 import AuthModal from './components/AuthModal';
 import ErrorBoundary from './components/ErrorBoundary';
 
-// Pages
 import HomePage from './pages/HomePage';
 import ExploreMatchesPage from './pages/ExploreMatchesPage';
 import LiveCalendarPage from './pages/LiveCalendarPage';
