@@ -45,7 +45,7 @@ const app = express();
 
 const PORT = process.env.PORT || 5000;
 
-// Connect to Database
+// connect it to Data Base
 
 await connectDB();
 
