@@ -95,11 +95,7 @@ app.use('/api/users', userRoutes);
 
 app.use('/api/matches', matchRoutes);
 
-/* ==========================================================
-
-   DATABASE VERIFICATION & TESTING ENDPOINT
-
-   ========================================================== */
+// Verification
 
 app.get('/api/database/verify', async (req, res) => {
 
