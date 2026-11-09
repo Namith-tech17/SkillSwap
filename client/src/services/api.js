@@ -10,7 +10,6 @@ function getAuthHeaders() {
 }
 
 export const api = {
-  // Authentication & Security (Task 4)
   async login(emailOrUsn, password) {
     const res = await fetch(`${API_BASE}/auth/login`, {
       method: 'POST',
